@@ -1,4 +1,4 @@
-
+package basicProgrammes;
 public class CloseVsQuit {
 	
 	/*
