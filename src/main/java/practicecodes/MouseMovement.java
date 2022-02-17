@@ -22,6 +22,7 @@ public class MouseMovement {
 		Thread.sleep(1000);
 		actions.contextClick(driver.findElement(By.xpath("//div[text()='Jobs']"))).build().perform();
 		Thread.sleep(5000);
+		driver.quit();
 	}
 
 }

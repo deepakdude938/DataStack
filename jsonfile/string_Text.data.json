@@ -1,0 +1,34 @@
+{
+  "_metadata": {
+    "deleted": false,
+    "lastUpdated": "2021-06-29T05:10:01.092Z",
+    "version": {
+      "release": "dev",
+      "document": 1
+    },
+    "createdAt": "2021-06-29T05:10:01.092Z"
+  },
+  "_id": "STR1001",
+  "dsStringText1001": "builder",
+  "dsStringText1002": "shopify",
+  "dsStringText1003": "amazon",
+  "dsStringText1004": "shopperstops",
+  "dsStringText1005": "snapdeal",
+  "dsStringText1006": null,
+  "dsStringText1007": "walmart",
+  "dsStringText1008": "pantaloon",
+  "dsStringText1010": "myntra",
+  "dsStringText1011": null,
+  "dsStringText1013": "limeraod",
+  "dsStringText1014": "shopclues",
+  "dsStringText1015": "tatacliq",
+  "dsStringText1016": null,
+  "dsStringText1018": "paytmmall",
+  "dsStringText1019": null,
+  "dsStringText1020": "ABCD",
+  "dsStringText1021": "P",
+  "dsStringText1022": "asksly",
+  "dsStringText1023": "wrangler",
+  "dsStringText1024": "flipkart",
+  "__v": 0
+}

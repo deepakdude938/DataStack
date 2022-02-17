@@ -3,16 +3,23 @@ package stepdefinitions;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.openqa.selenium.By;
+import org.openqa.selenium.ElementClickInterceptedException;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import io.cucumber.java.en.*;
 import io.github.bonigarcia.wdm.WebDriverManager;
@@ -54,9 +61,11 @@ public class LogIn2StepDefinitions {
 
 	@Given("User get data service then delete it and create it")
 	public void user_get_data_service_then_delete_it_and_create_it() throws Throwable {
+		Thread.sleep(3000);
 		List<WebElement> list = driver.findElements(By.id("serviceManagerCardTitle"));
 		for (WebElement exist : list) {
-			if ((exist.getText()).equals(dataservice)) {
+			
+				if ((exist.getText()).equals(dataservice)) {
 				flag = true;
 				String xpath = "//span[text()='" + dataservice
 						+ "'] /ancestor::div[@class='card-header bg-white border-0 p-2']/following-sibling::div[@class='card-body pt-2']/following-sibling::div[@class='card-footer p-0 ng-star-inserted']/descendant::div[@class='toggler']";
@@ -71,8 +80,11 @@ public class LogIn2StepDefinitions {
 				Thread.sleep(5000);
 				create(dataservice);
 				driver.findElement(By.xpath("//span[text()='Save & Deploy']")).click();
-				driver.findElement(By.xpath("//span[text()='Groups']")).click();
-				
+				Thread.sleep(5000);
+				WebDriverWait wait = new WebDriverWait(driver, 20);
+				WebElement element = driver.findElement(By.xpath("//span[text()='Groups']"));
+				wait.until(ExpectedConditions.elementToBeClickable(element));
+				element.click();
 			}
 		}
 		
@@ -83,15 +95,17 @@ public class LogIn2StepDefinitions {
 	public void user_not_get_data_service_then_create_it() throws Throwable {
 		create(dataservice);
 		driver.findElement(By.xpath("//span[text()='Save & Deploy']")).click();
-		driver.findElement(By.xpath("//span[text()='Groups']")).click();
-		
+		WebDriverWait wait = new WebDriverWait(driver, 20);
+		WebElement element = driver.findElement(By.xpath("//span[text()='Groups']"));
+		wait.until(ExpectedConditions.elementToBeClickable(element));
+		element.click();
 
 	}
 
 	@Then("Group {string} does not exist")
 	public void group_does_not_exist(String group) {
 		this.group = group;
-		
+
 		List<WebElement> groupList = driver
 				.findElements(By.xpath("//div[@class='group-card text-center m-3 hover ng-star-inserted']"));
 		this.groupList = groupList;
@@ -131,12 +145,19 @@ public class LogIn2StepDefinitions {
 
 	@Then("Delet group {string} then create")
 	public void delet_group_then_create(String group) {
-	
+
 		driver.findElement(By.xpath("//div[text()='" + group + "']/preceding-sibling::div")).click();
 		driver.findElement(By.xpath("//span[text()='Delete Group']")).click();
-		driver.findElement(By.xpath("//span[text()='Delete']"));
+		try {
+		driver.findElement(By.xpath("//span[text()='Delete']")).click();
+		}
+		catch(ElementClickInterceptedException e) {
+			driver.findElement(By.xpath("//span[text()='Delete']")).click();
+		}
 		// driver.findElement(By.xpath("//span[text()='Back']")).click();
+		
 		driver.findElement(By.xpath("//span[text()='New Group']")).click();
+		
 		driver.findElement(By.xpath("//input[@placeholder='Untitled Service']")).sendKeys(group);
 		driver.findElement(By.xpath("//button[text()='Create']")).click();
 
@@ -144,7 +165,23 @@ public class LogIn2StepDefinitions {
 
 	@Then("Assign appcenter permissions for {string} dataservice to {string}")
 	public void assign_appcenter_permissions_for_dataservice_to(String dataservice, String user) {
-
+		Actions actions = new Actions(driver);
+		actions.moveToElement(driver.findElement(By.xpath("//span[text()='App Center Roles ']"))).build().perform();
+		actions.doubleClick(driver.findElement(By.xpath("//span[text()='App Center Roles ']"))).build().perform();
+		
+			driver.findElement(By.xpath("//div[@class='ds-name py-2 px-4 hover text-accent alert-accent ng-star-inserted']/child::span")).click();
+		
+		driver.findElement(By.xpath(
+				"//span[text()='Manage']/ancestor::div[@class='name']/following-sibling::span[2]/descendant::span[2]"))
+				.click();
+//		actions.click(driver.findElement(By.xpath(
+//				"//span[@class='toggler border-border']/ancestor::span[@class='toggle font-sm']/preceding-sibling::div/child::span[text()='Manage']")))
+//				.build().perform();
+		driver.findElement(By.xpath("//div[@class='text-dark px-3 py-2 hover ng-star-inserted']/child::span[text()='Members ']")).click();
+		driver.findElement(By.xpath("//span[text()='Add User(s)']")).click();
+		driver.findElement(By.xpath("//div[@tabindex='-1']/child::odp-user-list-cell-renderer[text()=' test_ui_ac_ds_manage@appveen.com ']")).click();
+		driver.findElement(By.xpath("//button[text()='Done']")).click();
+		driver.findElement(By.xpath("//button[text()='Save']")).click();
 	}
 
 	public static void create(String dataserive) throws Throwable {
@@ -161,7 +198,11 @@ public class LogIn2StepDefinitions {
 			JSONObject prop = (JSONObject) d.get("properties");
 			String name = (String) prop.get("name");
 			// Boolean reqd=(Boolean)prop.get("required");
+			
 			driver.findElement(By.xpath("//span[text()='New Attribute']")).click();
+			
+			
+		
 
 			driver.findElement(By.xpath("(//input[@placeholder='Untitled Attribute'])[" + i + "]")).sendKeys(name);
 
